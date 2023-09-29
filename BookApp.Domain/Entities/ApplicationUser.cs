@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BookApp.Domain.Entities
 {
-    public  class ApplicationUser: IdentityUser
+    public  class ApplicationUser: IdentityUser<Guid>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -20,8 +20,26 @@ namespace BookApp.Domain.Entities
 
     }
 
-    public class ApplicationRole : IdentityRole
+    public class ApplicationRole : IdentityRole<Guid>
+    {
+        public ApplicationRole()
+        {
+            Id = Guid.NewGuid();
+            ConcurrencyStamp = Guid.NewGuid().ToString("N");
+        }
+    }
+
+    public class ApplicationRoleClaim : IdentityRoleClaim<Guid>
+    {
+    }
+
+    public class ApplicationUserClaim : IdentityUserClaim<Guid>
+    {
+    }
+
+    public class ApplicationUserRole : IdentityUserRole<Guid>
     {
 
     }
+
 }
