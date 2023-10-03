@@ -23,5 +23,7 @@ namespace BookApp.Infrastructure.Persistence
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
     }
 }

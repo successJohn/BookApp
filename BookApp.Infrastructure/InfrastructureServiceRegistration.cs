@@ -1,4 +1,6 @@
-﻿using BookApp.Infrastructure.Persistence;
+﻿using BookApp.Application.Interface;
+using BookApp.Infrastructure.Persistence;
+using BookApp.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +22,9 @@ namespace BookApp.Infrastructure
                 options.UseSqlServer(
                     dbConnectionString,
                     b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+
+
+            services.AddScoped<IAuthService, AuthenticationService>();
             
             return services;
         }
