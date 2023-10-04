@@ -1,3 +1,5 @@
+using BookApp.Infrastructure;
+
 namespace BookApp.API
 {
     public class Program
@@ -12,6 +14,11 @@ namespace BookApp.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.ConfigureIdentity();
+            builder.Services.ConfigureJWT(builder.Configuration);
+            builder.Services.AddInfrastructureServices(builder.Configuration);
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            builder.Services.ConfigureSwagger();
 
             var app = builder.Build();
 
