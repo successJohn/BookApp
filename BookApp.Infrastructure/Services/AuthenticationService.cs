@@ -69,7 +69,9 @@ namespace BookApp.Infrastructure.Services
 
             if (correctPassword)
             {
-                var jwtToken = GenerateJwtToken(user);
+                var userClaims = await _userManager.GetClaimsAsync(user);
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var jwtToken = GenerateJwtToken(user, userClaims, userRoles);
 
                 var refreshToken = new RefreshToken
                 {
@@ -96,23 +98,18 @@ namespace BookApp.Infrastructure.Services
             
         }
 
-        private string GenerateJwtToken(ApplicationUser user)
+        private string GenerateJwtToken(ApplicationUser user, IList<Claim>claims, IList<string>userRoles)
         {
 
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
             var key = Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]);
 
+            var userClaims = BuildJwtClaims(user, claims, userRoles);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                }),
+                Subject = new ClaimsIdentity(userClaims),
                 Issuer = _configuration.GetSection("JWT:ValidIssuer").Value,
                 Expires = DateTime.UtcNow.AddMinutes(20),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
@@ -126,6 +123,25 @@ namespace BookApp.Infrastructure.Services
 
         }
 
+        private static List<Claim> BuildJwtClaims(ApplicationUser user, IList<Claim> claims, IList<string> userRoles)
+        {
+            var userClaims = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, $"{user.FirstName }  {user.LastName}"),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                };
+
+            var roleClaim = userRoles.Select(x => new Claim(ClaimTypes.Role, x)).ToList();
+            userClaims.AddRange(roleClaim);
+
+
+            var userClaim = claims.Select(x => new Claim(x.Type, x.Value)).ToList();
+            userClaims.AddRange(userClaim);
+
+            return userClaims;
+        }
 
         public string BuildRefreshToken()
         {

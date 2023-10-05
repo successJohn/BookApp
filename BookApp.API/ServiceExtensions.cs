@@ -31,7 +31,6 @@ namespace BookApp.API
             var jwtConfig = configuration.GetSection("JWT");
 
             var secretKey = jwtConfig["Secret"];
-            var validAudience = jwtConfig["ValidAudience"];
             var validIssuer = jwtConfig["ValidIssuer"];
 
             services.AddAuthentication(options =>
@@ -47,9 +46,8 @@ namespace BookApp.API
                 {
                     ValidateIssuer = true,
                     ValidIssuer = validIssuer,
-                    ValidAudience = validAudience,
                     ValidateIssuerSigningKey = true,
-                    ValidateAudience = true,
+                    ValidateAudience = false,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero,
                     RequireExpirationTime = true,
