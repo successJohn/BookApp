@@ -1,3 +1,4 @@
+using BookApp.Application;
 using BookApp.Infrastructure;
 
 namespace BookApp.API
@@ -19,6 +20,7 @@ namespace BookApp.API
             builder.Services.AddInfrastructureServices(builder.Configuration);
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.ConfigureSwagger();
+            builder.Services.AddApplicationServices();
 
             var app = builder.Build();
 
@@ -31,9 +33,11 @@ namespace BookApp.API
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
-
+           
             app.MapControllers();
 
             app.Run();
