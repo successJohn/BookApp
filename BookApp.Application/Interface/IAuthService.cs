@@ -12,5 +12,6 @@ namespace BookApp.Application.Interface
     {
         Task<BaseResponse<RegisterDTO>> Register(RegisterDTO model);
         Task<BaseResponse<JwtResponseDTO>> Login(LoginDTO model);
+        Task<BaseResponse<JwtResponseDTO>> VerifyRefreshToken(RefreshTokenDTO tokenRequest);
     }
 }

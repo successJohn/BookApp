@@ -3,8 +3,10 @@ using BookApp.Application.DTO;
 using BookApp.Application.Interface;
 using BookApp.Application.Utilities;
 using BookApp.Domain.Entities;
+using BookApp.Infrastructure.Migrations;
 using BookApp.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -154,6 +156,93 @@ namespace BookApp.Infrastructure.Services
             }
         }
 
+        public async Task<BaseResponse<JwtResponseDTO>> VerifyRefreshToken(RefreshTokenDTO tokenRequest)
+        {
+            ClaimsPrincipal claimsPrincipal = GetPrincipalFromToken(tokenRequest.AccessToken);
 
+            if (claimsPrincipal == null)
+            {
+                return new BaseResponse<JwtResponseDTO>(ResponseMessage.ErrorMessage000);
+            }
+
+            var userId = Guid.Parse(claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return new BaseResponse<JwtResponseDTO>(ResponseMessage.ErrorMessage000);
+            }
+
+            var OldToken = await _context.RefreshTokens.Where(x => x.UserId == userId && x.Token == tokenRequest.RefreshToken).FirstOrDefaultAsync();
+            if (OldToken == null)
+            {
+               
+                return new BaseResponse<JwtResponseDTO>(ResponseMessage.ErrorMessage500);
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userClaims = await _userManager.GetClaimsAsync(user);
+
+            var token = GenerateJwtToken(user, userClaims, userRoles);
+
+            var refreshToken = BuildRefreshToken();
+
+             _context.RefreshTokens.Remove(OldToken);
+           
+            await _context.RefreshTokens.AddAsync(new RefreshToken
+            {
+                UserId = user.Id,
+                Token = refreshToken,
+                IssuedAt = DateTime.UtcNow,
+                ExpiresAt = DateTime.UtcNow.AddDays(Convert.ToInt32(_configuration.GetSection("JWT:RefreshTokenExpiration").Value))
+            });
+
+            await _context.SaveChangesAsync();
+
+            var data = new JwtResponseDTO()
+            {
+                Token = token,
+                RefreshToken = refreshToken
+            };
+
+            return new BaseResponse<JwtResponseDTO>(data);
+        }
+
+
+
+
+        private ClaimsPrincipal GetPrincipalFromToken(string token)
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+         // JwtSecurityTokenHandler tokenValidator = new JwtSecurityTokenHandler();
+        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var parameters = new TokenValidationParameters
+        {
+            ValidateAudience = false,
+            ValidateIssuer = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = key,
+            ValidateLifetime = false
+        };
+
+            try
+            {
+                var tokenVerification = jwtTokenHandler.ValidateToken(token, parameters, out var validatedToken);
+                if (!(validatedToken is JwtSecurityToken jwtSecurityToken) || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    //LOG TOKEN VALIDATION FAILED
+
+                    return null;
+                }
+                return tokenVerification;
+            }
+            catch (Exception ex)
+            {
+                //Log token verification failed
+                return null;
+            }
+        }
     }
 }
