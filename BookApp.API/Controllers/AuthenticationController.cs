@@ -29,5 +29,14 @@ namespace BookApp.API.Controllers
         {
             return ReturnResponse(await _authService.Login(model));
         }
+
+
+        [HttpPost]
+        [Route("RefreshToken")]
+
+        public async Task<IActionResult> RefreshToken(RefreshTokenDTO tokenRequest)
+        {
+          return ReturnResponse( await _authService.VerifyRefreshToken(tokenRequest));
+        }
     }
 }
