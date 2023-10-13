@@ -1,0 +1,12 @@
+﻿global using BookApp.Application.DTO;
+global using BookApp.Application.Interface;
+global using BookApp.Application.Utilities;
+global using BookApp.Domain.Entities;
+global using BookApp.Domain.Enums;
+global using BookApp.Infrastructure.Persistence;
+global using Microsoft.EntityFrameworkCore;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Text;
+global using System.Threading.Tasks;
