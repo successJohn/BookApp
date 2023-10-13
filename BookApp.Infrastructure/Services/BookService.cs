@@ -1,18 +1,4 @@
-﻿using AutoMapper;
-using BookApp.Application.DTO;
-using BookApp.Application.Interface;
-using BookApp.Application.Utilities;
-using BookApp.Application.Utilities.Pagination;
-using BookApp.Domain.Entities;
-using BookApp.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BookApp.Infrastructure.Services
+﻿namespace BookApp.Infrastructure.Services
 {
     public class BookService: IBookService
     {
