@@ -15,6 +15,7 @@ namespace BookApp.Application.Utilities
             VIEW_ACCOUNTS,
             USER_MANAGEMENT,
             SETTINGS,
+            BOOK_HISTORY,
             DASHBOARD
         }
 
@@ -24,6 +25,7 @@ namespace BookApp.Application.Utilities
             {
                 Permission.UPLOAD_BOOK,
                 Permission.EDIT_BOOK,
+                Permission.BOOK_HISTORY,
             };
         }
 
@@ -34,7 +36,8 @@ namespace BookApp.Application.Utilities
                 Permission.SETTINGS,
                 Permission.DASHBOARD,
                 Permission.USER_MANAGEMENT,
-                Permission.VIEW_ACCOUNTS
+                Permission.VIEW_ACCOUNTS,
+                Permission.BOOK_HISTORY
             };
         }
     }
