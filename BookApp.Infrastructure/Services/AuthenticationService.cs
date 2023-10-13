@@ -1,25 +1,4 @@
-﻿using AutoMapper;
-using BookApp.Application.DTO;
-using BookApp.Application.Interface;
-using BookApp.Application.Utilities;
-using BookApp.Domain.Entities;
-using BookApp.Infrastructure.Migrations;
-using BookApp.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BookApp.Infrastructure.Services
+﻿namespace BookApp.Infrastructure.Services
 {
     public class AuthenticationService : IAuthService
     {
