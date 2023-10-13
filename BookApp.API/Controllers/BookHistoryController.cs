@@ -19,17 +19,25 @@ namespace BookApp.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = nameof(Permission.BOOK_HISTORY))]
+        //[Authorize(Policy = nameof(Permission.BOOK_HISTORY))]
         public async Task<IActionResult> GetBookHistory(Guid bookId)
         {
             return ReturnResponse(await _bookHistoryService.GetBookHistory(bookId));
         }
 
-        [HttpPost]       
+        [HttpPost]
+        [Route("Borrow-Book")]
         public async Task<IActionResult> BorrowBook(Guid bookId)
         {
             return ReturnResponse(await _bookHistoryService.BorrowBook(bookId));
         }
-        
+
+        [HttpPost]
+        [Route("Return-Book")]
+        public async Task<IActionResult> ReturnBook(Guid bookId)
+        {
+            return ReturnResponse(await _bookHistoryService.ReturnBook(bookId));
+        }
+
     }
 }

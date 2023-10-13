@@ -28,6 +28,7 @@ namespace BookApp.Infrastructure
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBookService, BookService>();
+            services.AddScoped<IBookHistoryService, BookHistoryService>();
             services.AddScoped<IContextAccessor, ContextAccessor>();
             
             return services;

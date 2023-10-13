@@ -1,5 +1,6 @@
 ﻿using BookApp.Application.DTO;
 using BookApp.Application.Interface;
+using BookApp.Application.Utilities.Pagination;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,10 +35,17 @@ namespace BookApp.API.Controllers
             return ReturnResponse(await _bookService.EditBook(model));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetBook(BookDTO model)
+        [HttpGet("Id")]
+        public async Task<IActionResult> GetBook(Guid Id)
         {
-            return ReturnResponse(await _bookService.EditBook(model));
+            return ReturnResponse(await _bookService.GetBook(Id));
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllBooks([FromQuery] PagedResponseViewModel model)
+        {
+            return ReturnResponse(await _bookService.GetAllBooks(model));
         }
     }
 }

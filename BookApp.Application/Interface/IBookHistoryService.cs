@@ -12,5 +12,7 @@ namespace BookApp.Application.Interface
     {
         Task<BaseResponse<BorrowBookDTO>> BorrowBook(Guid BookId);
         Task<BaseResponse<List<BookHistoryDTO>>> GetBookHistory(Guid bookId);
+
+        Task<BaseResponse<string>> ReturnBook(Guid BookId);
     }
 }

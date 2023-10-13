@@ -34,7 +34,14 @@ namespace BookApp.Infrastructure.Services
                 return new BaseResponse<BorrowBookDTO>("Book cannot be found");
             }
 
+            //check if user already has more than 3 borrowed books without returning
 
+            var booksBorrowed = await _context.BookHistories.Where(x => x.UserId == userId && x.ReturnDate == null).CountAsync();
+
+            if(booksBorrowed > 3) {
+
+                return new BaseResponse<BorrowBookDTO>($"User with Id{userId} Cannot Borrow more than 3 books at once. Return Books to borrow new Ones");
+            }
             // check if book already exists with customer : TCan't give the same book twice to a customer if the book hasn't been returned
 
             var bookHistory = await IfBookWithCustomer(Guid.NewGuid(), BookId);
@@ -82,7 +89,7 @@ namespace BookApp.Infrastructure.Services
 
             var bookHistory = await IfBookWithCustomer(userId, BookId);
 
-            if (bookHistory != null)
+            if (bookHistory == null)
             {
                 return new BaseResponse<string>($"Book with Id {BookId} not issued to customer");
             }
@@ -103,7 +110,7 @@ namespace BookApp.Infrastructure.Services
 
         public async Task<BaseResponse<List<BookHistoryDTO>>> GetBookHistory(Guid bookId)
         {
-            var book = _context.BookHistories.Find(bookId);
+            var book = _context.BookHistories.Where(x => x.BookId == bookId).FirstOrDefault();
 
             if(book is null)
             {
@@ -119,7 +126,7 @@ namespace BookApp.Infrastructure.Services
                     BookAuthor = c.Book.Author,
                     QuantityInStock = c.Book.QuantityInStock,
                     QuantityStocked = c.Book.Quantity,
-                    BorrowedBy = $"{c.User.FirstName} {c.User.FirstName}",
+                    BorrowedBy = $"{c.User.FirstName} {c.User.LastName}",
                     BorrowedDate = c.CheckOutDate,
                     ReturnedDate = c.ReturnDate
                 }).ToListAsync();

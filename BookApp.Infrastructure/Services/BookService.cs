@@ -2,6 +2,7 @@
 using BookApp.Application.DTO;
 using BookApp.Application.Interface;
 using BookApp.Application.Utilities;
+using BookApp.Application.Utilities.Pagination;
 using BookApp.Domain.Entities;
 using BookApp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -87,13 +88,56 @@ namespace BookApp.Infrastructure.Services
         }
 
 
-        public async Task<BaseResponse<List<BookDTO>>> GetAllBooks()
+        public async Task<BaseResponse<PagedList<BookDTO>>> GetAllBooks(PagedResponseViewModel model)
         {
-            var books = await _context.Books.ToListAsync();
+            var booksQuery = _context.Books.AsQueryable();
 
-            var returnBooks = _mapper.Map<List<BookDTO>>(books);
+            return await SearchBooks(booksQuery, model);
 
-            return new BaseResponse<List<BookDTO>>(returnBooks);
+            //var returnBooks = _mapper.Map<List<BookDTO>>(books);
+
+            //return new BaseResponse<List<BookDTO>>(returnBooks);
+        }
+
+        private async Task<BaseResponse<PagedList<BookDTO>>> SearchBooks(IQueryable<Book> query, PagedResponseViewModel model)
+        {
+            if (model.Filter != null)
+            {
+                query = EntityFilter(query, model);
+
+            }
+
+            var books = await query.OrderByDescending(x => x.PublicationDate).ToPagedListAsync(model.PageIndex, model.PageIndex);
+
+            var booksDTO = _mapper.Map<IEnumerable<BookDTO>>(books);
+
+            var data = new PagedList<BookDTO>(booksDTO, model.PageIndex, model.PageSize, books.TotalItemCount);
+
+            return new BaseResponse<PagedList<BookDTO>> ( data, $"A total of {books.Count} were found" );
+        }
+
+        private IQueryable<Book> EntityFilter(IQueryable<Book> query, PagedResponseViewModel model)
+        {
+            if (!string.IsNullOrEmpty(model.Keyword) && !string.IsNullOrEmpty(model.Filter))
+            {
+                switch (model.Filter)
+                {
+                    case "Title":
+                        {
+                            query = query.Where(x => x.Title.ToLower().Contains(model.Keyword.ToLower()));
+                        }
+                        break;
+                    case "Author":
+                        {
+                            query = query.Where(x => x.Author.ToLower().Contains(model.Keyword.ToLower()));
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return query;
         }
     }
 }
