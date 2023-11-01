@@ -23,7 +23,8 @@ namespace BookApp.API
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredUniqueChars = 1;
                 options.User.RequireUniqueEmail = true;
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            }).AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
         }
 
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
