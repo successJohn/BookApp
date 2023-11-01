@@ -44,6 +44,10 @@ namespace BookApp.Infrastructure
                 option.ApiKey = config.GetSection("SmtpSettings")
                     .GetSection("APIKey").Value;
             });
+            services.AddScoped<IBookService, BookService>();
+            services.AddScoped<IBookHistoryService, BookHistoryService>();
+            services.AddScoped<IContextAccessor, ContextAccessor>();
+            
             return services;
         }
 

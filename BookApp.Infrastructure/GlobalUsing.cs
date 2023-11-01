@@ -1,0 +1,16 @@
+﻿global using AutoMapper;
+global using BookApp.Application.DTO;
+global using BookApp.Application.Interface;
+global using BookApp.Application.Utilities;
+global using BookApp.Application.Utilities.Pagination;
+global using BookApp.Domain.Entities;
+global using BookApp.Domain.Enums;
+global using BookApp.Infrastructure.Persistence;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.IdentityModel.Tokens;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Security.Cryptography;
+global using System.Text;

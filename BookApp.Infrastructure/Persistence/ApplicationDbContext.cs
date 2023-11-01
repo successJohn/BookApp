@@ -24,6 +24,9 @@ namespace BookApp.Infrastructure.Persistence
         }
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Book> Books { get; set; }
+
+        public DbSet<BookHistory> BookHistories { get; set; }
 
     }
 }
