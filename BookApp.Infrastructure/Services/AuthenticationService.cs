@@ -1,4 +1,24 @@
-﻿namespace BookApp.Infrastructure.Services
+﻿using AutoMapper;
+using BookApp.Application.DTO;
+using BookApp.Application.Interface;
+using BookApp.Application.Utilities;
+using BookApp.Domain.Entities;
+using BookApp.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BookApp.Infrastructure.Services
 {
     public class AuthenticationService : IAuthService
     {
@@ -6,28 +26,40 @@
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
-        public AuthenticationService(ApplicationDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        private readonly IMailService _mailService;
+        private readonly IEncryptService _encryptService;
+        public AuthenticationService(ApplicationDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager, IConfiguration configuration, IMailService mailService, IEncryptService encryptService)
         {
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
             _configuration = configuration;
+            _mailService = mailService;
+            _encryptService = encryptService;
         }
 
         public async Task<BaseResponse<RegisterDTO>> Register(RegisterDTO model)
         {
 
             var user = _mapper.Map<ApplicationUser>(model);
+            user.EmailConfirmed = false;
             user.RegisteredDate = DateTime.Now;
 
             var createUserResponse = await _userManager.CreateAsync(user, model.Password);
+
+            
             if (!createUserResponse.Succeeded)
             {
                 var errors = new List<string>();
                 errors.AddRange(createUserResponse.Errors.Select(x => x.Description));
                 return new BaseResponse<RegisterDTO>(ResponseMessage.AccountCreationFailure, errors);
             }
+            string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
+            //var emailConfirmationLink = Request.Scheme +
+            var emailConfirmationLink = _mailService.GenerateEmailConfirmationLinkAsync(_encryptService.Encrypt(token), user.Email);
+
+            await _mailService.SendAccountVerificationEmail(user.Email, user.FirstName, emailConfirmationLink);
             return new BaseResponse<RegisterDTO>(model, ResponseMessage.AccountCreationSuccess);
         }
 
@@ -41,6 +73,13 @@
             };
             //TODO: 
             // 1. Check for email Confirmation 
+            var emailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+
+            if(emailConfirmed is false)
+            {
+                return new BaseResponse<JwtResponseDTO> (ResponseMessage.ErrorMessage502 );
+            }
+
             //2 . check if user is blocked.
 
 

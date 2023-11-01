@@ -12,11 +12,7 @@ namespace BookApp.Application.Interface
     {
        
         Task<BaseResponse<ChangePasswordDTO>> ChangePassword(ChangePasswordDTO model);
-        /*
-        Task<BaseResponse<string>> ConfirmEmail(ConfirmEmailDTO model);
-        Task<BaseResponse<ForgotPasswordDTO>> ForgotPassword(ForgotPasswordDTO model);
-        Task<BaseResponse<ResetPasswordDTO>> ResetPassword(ResetPasswordDTO model);
-        
-        */
+        Task<BaseResponse<string>> ConfirmEmail(string token, string email);
+
     }
 }

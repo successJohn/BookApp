@@ -21,5 +21,14 @@ namespace BookApp.API.Controllers
         {
             return ReturnResponse(await _userservice.ChangePassword(model));
         }
+
+        
+        [HttpPost]
+        [Route("confirmEmail/{token}/{email}")]
+        public async Task<IActionResult> ConfirmEmail(string token,string email)
+        {
+            return ReturnResponse(await _userservice.ConfirmEmail(token, email));
+        }
+        
     }
 }
