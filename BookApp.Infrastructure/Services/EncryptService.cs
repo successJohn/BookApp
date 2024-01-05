@@ -1,13 +1,4 @@
-﻿using BookApp.Application.Interface;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BookApp.Infrastructure.Services
+﻿namespace BookApp.Infrastructure.Services
 {
     public class EncryptService: IEncryptService
     {

@@ -1,15 +1,4 @@
-﻿using BookApp.Application.DTO;
-using BookApp.Application.Interface;
-using BookApp.Application.Utilities;
-using BookApp.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BookApp.Infrastructure.Services
+﻿namespace BookApp.Infrastructure.Services
 {
     public class UserService : IUserService
     {
