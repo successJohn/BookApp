@@ -53,6 +53,19 @@
             return new BaseResponse<BookDTO>(book, "Book Found Successfully");
         }
 
+        public async Task<BaseResponse<BookDTO>> GetBookByAuthor(string authorname)
+        {
+            var findBook =  _context.Books.Where(x => x.Author == authorname);
+            if (findBook == null)
+            {
+                return new BaseResponse<BookDTO>($"Book with Id {authorname} does not exist");
+            }
+
+            var book = _mapper.Map<BookDTO>(findBook);
+
+            return new BaseResponse<BookDTO>(book, "Book Found Successfully");
+        }
+
         public async Task<BaseResponse<Guid>> EditBook(BookDTO model)
         {
             var book = await _context.Books.FindAsync(model.BookId);
