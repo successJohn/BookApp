@@ -1,6 +1,5 @@
 ﻿using AutoMapper.Internal;
 using BookApp.Application.Interface;
-using BookApp.Application.Models;
 using BookApp.Application.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -35,6 +34,7 @@ namespace BookApp.Infrastructure.Mail
             _configuration = configuration;
             //_encrypt = encrypt;    
         }
+        
         
         public string GenerateEmailConfirmationLinkAsync(string token, string email)
         {
