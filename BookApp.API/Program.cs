@@ -1,5 +1,5 @@
 using BookApp.Application;
-using BookApp.Application.Models;
+//using BookApp.Application.Models;
 using BookApp.Infrastructure;
 
 namespace BookApp.API
@@ -22,8 +22,6 @@ namespace BookApp.API
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.ConfigureSwagger();
             builder.Services.AddApplicationServices();
-            builder.Services.Configure<EmailLink>(options =>
-             builder.Configuration.GetSection(nameof(EmailLink)).Bind(options));
 
 
             var app = builder.Build();
