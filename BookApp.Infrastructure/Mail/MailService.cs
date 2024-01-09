@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace BookApp.Infrastructure.Mail
 {
@@ -40,7 +41,10 @@ namespace BookApp.Infrastructure.Mail
         {
             string baseUri = _emailLink.BaseUrl;
 
-            var hrefValue = $"{baseUri}/{token}/{email}";
+            //Encode email Address
+            string encodedEmail = HttpUtility.UrlEncode( email );
+
+            var hrefValue = $"{baseUri}/{token}/{encodedEmail}";
 
             var link = $"<!DOCTYPE html>\r\n<html>\r\n<head>\r\n   " +
                 $" <title>Account Verification</title>\r\n</head>\r\n<body>\r\n  " +
