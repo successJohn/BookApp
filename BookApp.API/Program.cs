@@ -21,7 +21,7 @@ namespace BookApp.API
             builder.Services.AddInfrastructureServices(builder.Configuration);
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.ConfigureSwagger();
-            builder.Services.AddApplicationServices();
+            builder.Services.AddApplicationServices(builder.Configuration);
 
 
             var app = builder.Build();
