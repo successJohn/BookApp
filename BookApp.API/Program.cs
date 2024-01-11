@@ -1,6 +1,8 @@
 using BookApp.Application;
+using BookApp.Application.Interface;
 //using BookApp.Application.Models;
 using BookApp.Infrastructure;
+using Hangfire;
 
 namespace BookApp.API
 {
@@ -41,6 +43,12 @@ namespace BookApp.API
 
            
             app.MapControllers();
+
+            app.UseHangfireDashboard();
+
+            app.MapHangfireDashboard();
+
+            RecurringJob.AddOrUpdate<IBookHistoryService>(x => x.CheckCron(), "*/5 * * * *");
 
             app.Run();
         }
