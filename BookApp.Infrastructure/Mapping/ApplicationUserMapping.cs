@@ -34,6 +34,7 @@ namespace BookApp.Infrastructure.Mapping
                     TwoFactorEnabled = false,
                     PhoneNumberConfirmed = true,
                     PasswordHash = Hasher.HashPassword(null, "BookApi_1"),
+                    ProfilePicture=""
                    // SecurityStamp = "99ae0c45-d682-4542-9ba7-1281e471916b",
                 },
                 // lIBRARIAN
@@ -50,6 +51,7 @@ namespace BookApp.Infrastructure.Mapping
                     TwoFactorEnabled = false,
                     PhoneNumberConfirmed = true,
                     PasswordHash = Hasher.HashPassword(null, "BookApi_1"),
+                     ProfilePicture=""
                    // SecurityStamp = "016020e3-5c50-40b4-9e66-bba56c9f5bf2",
                 },
 

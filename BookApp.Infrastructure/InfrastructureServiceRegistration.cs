@@ -47,6 +47,8 @@ namespace BookApp.Infrastructure
             services.AddScoped<IBookHistoryService, BookHistoryService>();
             services.AddScoped<IContextAccessor, ContextAccessor>();
             services.AddOptions<EmailLink>().BindConfiguration(nameof(EmailLink));
+            services.AddScoped<ICloudinaryService,CloudinaryService>();
+            services.AddOptions<CloudinarySettings>().BindConfiguration(nameof(CloudinarySettings));
             return services;
         }
 

@@ -18,6 +18,8 @@ namespace BookApp.Domain.Entities
 
         public DateTime LastLoginDate { get; set; }
 
+        public string? ProfilePicture { get; set; }
+
     }
 
     public class ApplicationRole : IdentityRole<Guid>
