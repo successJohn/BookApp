@@ -1,6 +1,5 @@
 ﻿using AutoMapper.Internal;
 using BookApp.Application.Interface;
-using BookApp.Application.Models;
 using BookApp.Application.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace BookApp.Infrastructure.Mail
 {
@@ -36,11 +36,15 @@ namespace BookApp.Infrastructure.Mail
             //_encrypt = encrypt;    
         }
         
+        
         public string GenerateEmailConfirmationLinkAsync(string token, string email)
         {
             string baseUri = _emailLink.BaseUrl;
 
-            var hrefValue = $"{baseUri}/{token}/{email}";
+            //Encode email Address
+            string encodedEmail = HttpUtility.UrlEncode( email );
+
+            var hrefValue = $"{baseUri}/{token}/{encodedEmail}";
 
             var link = $"<!DOCTYPE html>\r\n<html>\r\n<head>\r\n   " +
                 $" <title>Account Verification</title>\r\n</head>\r\n<body>\r\n  " +

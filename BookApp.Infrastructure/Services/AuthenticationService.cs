@@ -56,7 +56,6 @@ namespace BookApp.Infrastructure.Services
             }
             string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            //var emailConfirmationLink = Request.Scheme +
             var emailConfirmationLink = _mailService.GenerateEmailConfirmationLinkAsync(_encryptService.Encrypt(token), user.Email);
 
             await _mailService.SendAccountVerificationEmail(user.Email, user.FirstName, emailConfirmationLink);

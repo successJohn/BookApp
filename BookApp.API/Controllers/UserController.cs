@@ -29,6 +29,13 @@ namespace BookApp.API.Controllers
         {
             return ReturnResponse(await _userservice.ConfirmEmail(token, email));
         }
-        
+
+        [HttpPost]
+        [Route("uploadProfile")]
+        public async Task<IActionResult> UploadProfile(string userId, IFormFile filePath)
+        {
+            return ReturnResponse(await _userservice.UpdateProfile(userId, filePath));
+        }
+
     }
 }

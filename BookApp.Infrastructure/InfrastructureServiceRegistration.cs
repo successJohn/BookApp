@@ -1,5 +1,4 @@
 ﻿using BookApp.Application.Interface;
-using BookApp.Application.Models;
 using BookApp.Infrastructure.Mail;
 using BookApp.Infrastructure.Persistence;
 using BookApp.Infrastructure.Services;
@@ -47,7 +46,9 @@ namespace BookApp.Infrastructure
             services.AddScoped<IBookService, BookService>();
             services.AddScoped<IBookHistoryService, BookHistoryService>();
             services.AddScoped<IContextAccessor, ContextAccessor>();
-            
+            services.AddOptions<EmailLink>().BindConfiguration(nameof(EmailLink));
+            services.AddScoped<ICloudinaryService,CloudinaryService>();
+            services.AddOptions<CloudinarySettings>().BindConfiguration(nameof(CloudinarySettings));
             return services;
         }
 

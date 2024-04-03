@@ -10,13 +10,13 @@ public class BookHistoryService : IBookHistoryService
         _context = context;
         _contextAccessor = contextAccessor;
     }
-    
+
     public async Task<BaseResponse<BorrowBookDTO>> BorrowBook(Guid BookId)
     {
         var book = await _context.Books.FindAsync(BookId);
-        var userId = Guid.Parse( _contextAccessor.GetCurrentUserId());
+        var userId = Guid.Parse(_contextAccessor.GetCurrentUserId());
 
-        if(book is null)
+        if (book is null)
         {
             return new BaseResponse<BorrowBookDTO>("Book cannot be found");
         }
@@ -25,7 +25,7 @@ public class BookHistoryService : IBookHistoryService
 
         var booksBorrowed = await _context.BookHistories.Where(x => x.UserId == userId && x.ReturnDate == null).CountAsync();
 
-        if( booksBorrowed > 3) { // using app settings 
+        if (booksBorrowed > 3) { // using app settings 
 
             return new BaseResponse<BorrowBookDTO>($"User with Id{userId} Cannot Borrow more than 3 books at once. Return Books to borrow new Ones");
         }
@@ -38,7 +38,7 @@ public class BookHistoryService : IBookHistoryService
             return new BaseResponse<BorrowBookDTO>($"Book with Id{BookId} is already borrowed by user");
         }
 
-        if(book.QuantityInStock == 0)
+        if (book.QuantityInStock == 0)
         {
             return new BaseResponse<BorrowBookDTO>($"Book with Id {BookId} Not in stock");
         }
@@ -56,9 +56,11 @@ public class BookHistoryService : IBookHistoryService
 
         book.QuantityInStock--;
 
-         _context.Books.Update(book);
+        _context.Books.Update(book);
 
         await _context.SaveChangesAsync();
+
+
 
         return new BaseResponse<BorrowBookDTO>(new BorrowBookDTO { BookId = borrowedBook.Id, ExpectedReturnDate = borrowedBook.ExpectedReturnDate }, "Book Issued Successfully");
     }
@@ -99,12 +101,12 @@ public class BookHistoryService : IBookHistoryService
     {
         var book = _context.BookHistories.Include(b => b.Book)
             .Include(u => u.User).Where(x => x.BookId == bookId); // find if include should preceed where or vice versa.
-        
+
         if (!book.Any())
         {
             return new BaseResponse<List<BookHistoryDTO>>($"Book with Id {bookId} does not have any borrow history");
         }
-        
+
 
         var bookHistory = await book
             .Select(c => new BookHistoryDTO
@@ -121,7 +123,7 @@ public class BookHistoryService : IBookHistoryService
 
         return new BaseResponse<List<BookHistoryDTO>>(bookHistory, "Book successfully retrieved");
 
-    }                     
+    }
 
 
     private async Task<BookHistory> IfBookWithCustomer(Guid userId, Guid bookId)
@@ -132,7 +134,10 @@ public class BookHistoryService : IBookHistoryService
     //TOD0
 
     // Check for overdue books and notify users via email
-    // public async Task CheckOverdueBooks()
+    public void CheckCron()
+    {
+        Console.WriteLine("Cron Job Working");
+    }
     
 
 

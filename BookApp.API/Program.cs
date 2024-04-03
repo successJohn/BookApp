@@ -1,6 +1,8 @@
 using BookApp.Application;
-using BookApp.Application.Models;
+using BookApp.Application.Interface;
+//using BookApp.Application.Models;
 using BookApp.Infrastructure;
+using Hangfire;
 
 namespace BookApp.API
 {
@@ -21,9 +23,7 @@ namespace BookApp.API
             builder.Services.AddInfrastructureServices(builder.Configuration);
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.ConfigureSwagger();
-            builder.Services.AddApplicationServices();
-            builder.Services.Configure<EmailLink>(options =>
-             builder.Configuration.GetSection(nameof(EmailLink)).Bind(options));
+            builder.Services.AddApplicationServices(builder.Configuration);
 
 
             var app = builder.Build();
@@ -43,6 +43,12 @@ namespace BookApp.API
 
            
             app.MapControllers();
+
+            app.UseHangfireDashboard();
+
+            app.MapHangfireDashboard();
+
+            RecurringJob.AddOrUpdate<IBookHistoryService>(x => x.CheckCron(), "*/5 * * * *");
 
             app.Run();
         }

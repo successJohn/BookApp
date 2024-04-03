@@ -14,5 +14,7 @@ namespace BookApp.Application.Interface
         Task<BaseResponse<List<BookHistoryDTO>>> GetBookHistory(Guid bookId);
 
         Task<BaseResponse<string>> ReturnBook(Guid BookId);
+
+        void CheckCron();
     }
 }
